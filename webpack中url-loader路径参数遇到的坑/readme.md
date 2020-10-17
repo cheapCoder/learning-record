@@ -6,4 +6,4 @@ url-loader中的limit参数限制会转成base64编码的图片，
 
 
 
-![avatar](/src/images/IMG_0559(20200820-000802).PNG)
+![avatar](./src/images/IMG_0559(20200820-000802).PNG)
