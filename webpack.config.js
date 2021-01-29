@@ -1,5 +1,5 @@
 const { resolve } = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin'); 
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   mode: 'development',
@@ -7,6 +7,7 @@ module.exports = {
   output: {
     filename: 'build.js',
     path: resolve(__dirname, "dist/"),
+    publicPath: '',
   },
   module: {
     rules: [
@@ -24,7 +25,24 @@ module.exports = {
           'less-loader'
         ]
       },
+      {
+        test: /\.html$/i,
+        loader: 'html-loader',
+      },
+      {
+        test: /\.(png|jpg|gif)$/i,
+        type: 'asset',
+        parser: {
+          dataUrlCondition: {
+            maxSize: 8 * 1024
+          }
+        }
+      }
     ],
   },
-  plugins: [new HtmlWebpackPlugin()]
+  plugins: [new HtmlWebpackPlugin({
+    alwaysWriteToDisk: true,
+    template: resolve(__dirname, 'src/index.html'),
+    filename: 'index.html',
+  })]
 }
