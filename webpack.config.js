@@ -1,6 +1,10 @@
 const { resolve } = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+
+process.env.NODE_ENV = 'development'
+console.log(process.env.NODE_ENV);
 
 module.exports = {
   // mode: 'development',
@@ -16,7 +20,18 @@ module.exports = {
     rules: [
       {
         test: /\.css$/i,
-        use: [MiniCssExtractPlugin.loader, "css-loader"],
+        use: [MiniCssExtractPlugin.loader, "css-loader", {
+          loader: "postcss-loader",
+          options: {
+            postcssOptions: {
+              plugins: [
+                [
+                  "postcss-preset-env",
+                ]
+              ],
+            },
+          },
+        }],
       },
       {
         test: /\.less$/,
@@ -41,7 +56,13 @@ module.exports = {
             maxSize: 8 * 1024
           }
         },
-      }
+      },
+    ],
+  },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new CssMinimizerPlugin(),
     ],
   },
   plugins: [new HtmlWebpackPlugin({
@@ -53,6 +74,6 @@ module.exports = {
     contentBase: resolve(__dirname, '/dist'), //打包后监听的目录，
     compress: true,
     port: 9000,
-    open: true,  
+    open: true,
   }
 }
