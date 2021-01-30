@@ -1,8 +1,10 @@
 const { resolve } = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
-  mode: 'development',
+  // mode: 'development',
+  mode: 'production',
   entry: '/src/index.js',
   output: {
     filename: 'build.js',
@@ -14,7 +16,7 @@ module.exports = {
     rules: [
       {
         test: /\.css$/i,
-        use: ["style-loader", "css-loader"],
+        use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
       {
         test: /\.less$/,
@@ -46,7 +48,7 @@ module.exports = {
     alwaysWriteToDisk: true,
     template: resolve(__dirname, 'src/index.html'),
     filename: 'index.html',
-  })],
+  }), new MiniCssExtractPlugin()],
   devServer: {
     contentBase: resolve(__dirname, '/dist'), //打包后监听的目录，
     compress: true,
