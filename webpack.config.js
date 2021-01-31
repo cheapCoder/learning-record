@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 // process.env.NODE_ENV = 'development'
 
@@ -13,43 +14,47 @@ module.exports = {
   output: {
     filename: 'build.js',
     path: resolve(__dirname, "dist"),
-    publicPath: '/',
+    publicPath: './',
     assetModuleFilename: 'images/[name]-[hash][ext][query]',
   },
 
   module: {
     rules: [
       {
-        test: /\.css$/i,
-        use: [
-          MiniCssExtractPlugin.loader,
-          // "style-loader",
-          "css-loader", {
-            loader: "postcss-loader",
-            options: {
-              postcssOptions: {
-                plugins: [
-                  [
-                    "postcss-preset-env",
-                  ]
-                ],
-              },
-            },
-          }],
-      },
-      {
-        test: /\.less$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          //将less文件编译成css文件
-          //需要下载less-loader和less
-          'less-loader'
+        oneOf: [
+          {
+            test: /\.css$/i,
+            use: [
+              MiniCssExtractPlugin.loader,
+              // "style-loader",
+              "css-loader", {
+                loader: "postcss-loader",
+                options: {
+                  postcssOptions: {
+                    plugins: [
+                      [
+                        "postcss-preset-env",
+                      ]
+                    ],
+                  },
+                },
+              }],
+          },
+          {
+            test: /\.less$/,
+            use: [
+              'style-loader',
+              'css-loader',
+              //将less文件编译成css文件
+              //需要下载less-loader和less
+              'less-loader'
+            ]
+          },
+          {
+            test: /\.html$/i,
+            loader: 'html-loader',
+          },
         ]
-      },
-      {
-        test: /\.html$/i,
-        loader: 'html-loader',
       },
       {
         // test: /\.(png|jpg|gif)$/i,          // 打包图片
@@ -89,11 +94,15 @@ module.exports = {
     ],
   },
 
-  plugins: [new HtmlWebpackPlugin({
-    alwaysWriteToDisk: true,
-    template: resolve(__dirname, 'src/index.html'),
-    filename: 'index.html',
-  }), new MiniCssExtractPlugin()],
+  plugins: [
+    new HtmlWebpackPlugin({
+      alwaysWriteToDisk: true,
+      template: resolve(__dirname, 'src/index.html'),
+      filename: 'index.html',
+    }),
+    new MiniCssExtractPlugin(),
+    new CleanWebpackPlugin(),
+  ],
 
   optimization: {
     minimize: true,
@@ -110,5 +119,6 @@ module.exports = {
     open: true,
     hot: true,
     // inline: true
-  }
+  },
+  devtool: 'eval-source-map'
 }
