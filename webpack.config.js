@@ -15,7 +15,7 @@ module.exports = {
     filename: 'build.js',
     path: resolve(__dirname, "dist"),
     publicPath: './',
-    assetModuleFilename: 'images/[name]-[hash][ext][query]',
+    assetModuleFilename: 'images/[name]-[contenthash:10][ext][query]',
   },
 
   module: {
@@ -87,7 +87,8 @@ module.exports = {
                 safari: '10',
                 edge: '17'
               }
-            }]]
+            }]],
+            cacheDirectory: true,
           }
         }
       }
@@ -100,7 +101,9 @@ module.exports = {
       template: resolve(__dirname, 'src/index.html'),
       filename: 'index.html',
     }),
-    new MiniCssExtractPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'css/built.[contenthash:10].css'
+    }),
     new CleanWebpackPlugin(),
   ],
 
