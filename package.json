@@ -2,10 +2,10 @@
   "name": "learning-record-repository",
   "version": "1.0.0",
   "description": "",
-  "main": "node简易图片爬虫.js",
+  "main": "index.js",
   "scripts": {
     "dev": "webpack serve",
-    "build": "webpack",
+    "build": "webpack --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

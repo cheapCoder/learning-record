@@ -7,13 +7,13 @@ const ESLintPlugin = require('eslint-webpack-plugin');
 // process.env.NODE_ENV = 'development'
 
 module.exports = {
-  // mode: 'development',
-  mode: 'production',   // 生产模式下自动压缩HTML和JS
-  entry: '/src/index.js',
+  mode: 'development',
+  // mode: 'production',   // 生产模式下自动压缩HTML和JS
+  entry: ['./src/index.js', './src/index.html'],
   output: {
     filename: 'build.js',
-    path: resolve(__dirname, "dist/"),
-    publicPath: '',
+    path: resolve(__dirname, "dist"),
+    publicPath: '/',
     assetModuleFilename: 'images/[name]-[hash][ext][query]',
   },
 
@@ -21,18 +21,21 @@ module.exports = {
     rules: [
       {
         test: /\.css$/i,
-        use: [MiniCssExtractPlugin.loader, "css-loader", {
-          loader: "postcss-loader",
-          options: {
-            postcssOptions: {
-              plugins: [
-                [
-                  "postcss-preset-env",
-                ]
-              ],
+        use: [
+          MiniCssExtractPlugin.loader,
+          // "style-loader",
+          "css-loader", {
+            loader: "postcss-loader",
+            options: {
+              postcssOptions: {
+                plugins: [
+                  [
+                    "postcss-preset-env",
+                  ]
+                ],
+              },
             },
-          },
-        }],
+          }],
       },
       {
         test: /\.less$/,
@@ -96,14 +99,16 @@ module.exports = {
     minimize: true,
     minimizer: [
       new CssMinimizerPlugin(),
-      new ESLintPlugin()
+      // new ESLintPlugin(),
     ],
   },
-
+  target: 'web',    //TODO: 解决浏览器不刷新的bug
   devServer: {
-    contentBase: resolve(__dirname, '/dist'), //打包后监听的目录，
+    contentBase: resolve(__dirname, 'dist'), //打包后监听的目录，
     compress: true,
     port: 9000,
     open: true,
+    hot: true,
+    // inline: true
   }
 }
