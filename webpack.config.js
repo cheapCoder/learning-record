@@ -2,6 +2,7 @@ const { resolve } = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const ESLintPlugin = require('eslint-webpack-plugin');
 
 process.env.NODE_ENV = 'development'
 console.log(process.env.NODE_ENV);
@@ -16,6 +17,7 @@ module.exports = {
     publicPath: '',
     assetModuleFilename: 'images/[name]-[hash][ext][query]',
   },
+
   module: {
     rules: [
       {
@@ -59,17 +61,22 @@ module.exports = {
       },
     ],
   },
+
+  plugins: [new HtmlWebpackPlugin({
+    alwaysWriteToDisk: true,
+    template: resolve(__dirname, 'src/index.html'),
+    filename: 'index.html',
+  }), new MiniCssExtractPlugin(), new ESLintPlugin({
+    // fix: true
+  })],
+
   optimization: {
     minimize: true,
     minimizer: [
       new CssMinimizerPlugin(),
     ],
   },
-  plugins: [new HtmlWebpackPlugin({
-    alwaysWriteToDisk: true,
-    template: resolve(__dirname, 'src/index.html'),
-    filename: 'index.html',
-  }), new MiniCssExtractPlugin()],
+
   devServer: {
     contentBase: resolve(__dirname, '/dist'), //打包后监听的目录，
     compress: true,
