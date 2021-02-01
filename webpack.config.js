@@ -6,13 +6,15 @@ const ESLintPlugin = require('eslint-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require("terser-webpack-plugin");
 const WorkboxPlugin = require('workbox-webpack-plugin');
+const webpack = require('webpack');
+const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 
 process.env.NODE_ENV = 'production'
 
 module.exports = {
-  // entry: './src/index.js',
+  entry: './src/index.js',
   // entry: { main: './src/js/index.js', test: './src/js/test.js' },// 多入口代码分割
-  entry: './src/js/index.js',
+  // entry: './src/js/index.js',
   output: {
     filename: '[name].[contenthash].js',
     path: resolve(__dirname, "dist"),
@@ -120,6 +122,12 @@ module.exports = {
       filename: 'css/built.[contenthash:10].css'
     }),
     new CleanWebpackPlugin(),
+    new webpack.DllReferencePlugin({
+      manifest: require('./dll/manifest.json'),
+    }),
+    new AddAssetHtmlPlugin({
+      filepath: resolve(__dirname, 'dll/library.js'),
+    })
   ],
 
   optimization: {
@@ -135,7 +143,8 @@ module.exports = {
       new WorkboxPlugin.GenerateSW({    //TODO: serviceWorker有注册不起作用
         clientsClaim: true,
         skipWaiting: true,
-      })
+      }),
+      
     ],
   },
   // target: 'web',    //NOTE: 解决浏览器不刷新的bug
