@@ -4,15 +4,16 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin");
 
-// process.env.NODE_ENV = 'development'
+process.env.NODE_ENV = 'production'
 
 module.exports = {
-  mode: 'development',
-  // mode: 'production',   // 生产模式下自动压缩HTML和JS
-  entry: ['./src/index.js', './src/index.html'],
+  // entry: './src/index.js',
+  // entry: { main: './src/js/index.js', test: './src/js/test.js' },// 多入口代码分割
+  entry: './src/js/index.js',
   output: {
-    filename: 'build.js',
+    filename: '[name].[contenthash].js',
     path: resolve(__dirname, "dist"),
     publicPath: './',
     assetModuleFilename: 'images/[name]-[contenthash:10][ext][query]',
@@ -69,6 +70,7 @@ module.exports = {
       {
         test: /\.m?js$/,
         exclude: /(node_modules|bower_components)/,
+        enforce: 'pre',
         use: {
           loader: 'babel-loader',
           options: {
@@ -86,7 +88,8 @@ module.exports = {
                 ie: '9',
                 safari: '10',
                 edge: '17'
-              }
+              },
+              modules: false,
             }]],
             cacheDirectory: true,
           }
@@ -97,9 +100,13 @@ module.exports = {
 
   plugins: [
     new HtmlWebpackPlugin({
-      alwaysWriteToDisk: true,
+      // alwaysWriteToDisk: true,
       template: resolve(__dirname, 'src/index.html'),
-      filename: 'index.html',
+      minify: {
+        collapseWhitespace: true,
+        removeComments: true
+      }
+      // filename: 'index.html',
     }),
     new MiniCssExtractPlugin({
       filename: 'css/built.[contenthash:10].css'
@@ -108,13 +115,18 @@ module.exports = {
   ],
 
   optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
+    // usedExports: true,
     minimize: true,
     minimizer: [
       new CssMinimizerPlugin(),
       // new ESLintPlugin(),
+      new TerserPlugin()
     ],
   },
-  target: 'web',    //TODO: 解决浏览器不刷新的bug
+  target: 'web',    //NOTE: 解决浏览器不刷新的bug
   devServer: {
     contentBase: resolve(__dirname, 'dist'), //打包后监听的目录，
     compress: true,
@@ -123,5 +135,6 @@ module.exports = {
     hot: true,
     // inline: true
   },
-  devtool: 'eval-source-map'
+  // devtool: 'source-map',
+  mode: "production",   // 生产模式下自动压缩HTML和JS， TODO:打不开tree shaking
 }
