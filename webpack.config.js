@@ -5,6 +5,7 @@ const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require("terser-webpack-plugin");
+const WorkboxPlugin = require('workbox-webpack-plugin');
 
 process.env.NODE_ENV = 'production'
 
@@ -71,29 +72,36 @@ module.exports = {
         test: /\.m?js$/,
         exclude: /(node_modules|bower_components)/,
         enforce: 'pre',
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [['@babel/preset-env', {
-              // 按需加载
-              useBuiltIns: 'usage',
-              // 指定core-js版本
-              corejs: {
-                version: 3
-              },
-              // 指定兼容性做到哪个版本浏览器
-              targets: {
-                chrome: '60',
-                firefox: '60',
-                ie: '9',
-                safari: '10',
-                edge: '17'
-              },
-              modules: false,
-            }]],
-            cacheDirectory: true,
-          }
-        }
+        use: [
+          //   {                                      
+          //   loader: "thread-loader",       //NOTE: 开启多线程
+          //   options: {
+          //     workers: 2
+          //   }
+          // },
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: [['@babel/preset-env', {
+                // 按需加载
+                useBuiltIns: 'usage',
+                // 指定core-js版本
+                corejs: {
+                  version: 3
+                },
+                // 指定兼容性做到哪个版本浏览器
+                targets: {
+                  chrome: '60',
+                  firefox: '60',
+                  ie: '9',
+                  safari: '10',
+                  edge: '17'
+                },
+                modules: false,
+              }]],
+              cacheDirectory: true,
+            }
+          }]
       }
     ],
   },
@@ -123,10 +131,14 @@ module.exports = {
     minimizer: [
       new CssMinimizerPlugin(),
       // new ESLintPlugin(),
-      new TerserPlugin()
+      new TerserPlugin(),
+      new WorkboxPlugin.GenerateSW({    //TODO: serviceWorker有注册不起作用
+        clientsClaim: true,
+        skipWaiting: true,
+      })
     ],
   },
-  target: 'web',    //NOTE: 解决浏览器不刷新的bug
+  // target: 'web',    //NOTE: 解决浏览器不刷新的bug
   devServer: {
     contentBase: resolve(__dirname, 'dist'), //打包后监听的目录，
     compress: true,
@@ -136,5 +148,5 @@ module.exports = {
     // inline: true
   },
   // devtool: 'source-map',
-  mode: "production",   // 生产模式下自动压缩HTML和JS， TODO:打不开tree shaking
+  mode: "production",   // 生产模式下自动压缩HTML和JS，
 }
