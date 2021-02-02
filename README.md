@@ -39,11 +39,10 @@ webpack是一种前端资源构建工具，一个静态模块打包器(modulebun
 
 ### 2. 1 初始化配置
 
-1. 初始化package.json	`npm init`
+1. 初始化package.json：`npm init`
 
-2. 下载并安装webpack
+2. 下载并安装webpack：`npm install webpack webpack-cli -D`
 
-   - `npm install webpack webpack-cli -D`
 
 ### 2. 2 编译打包应用
 
@@ -162,69 +161,9 @@ module.exports = {
 
 2. ~~修改配置文件~~
 
-   ```
-   module.exports = {
-     module: {
-       rules: [
-         {
-           //问题：默认处理不了html中img图片
-           //处理图片资源
-           test: /\.(jpg|png|gif)$/,
-           //使用一个loader
-           //下载url-loaderfile-loader
-           loader: 'url-loader',
-           options: {
-             //图片大小小于 8 kb，就会被base 64 处理
-             //优点:减少请求数量（减轻服务器压力）
-             //缺点：图片体积会更大（文件请求速度更慢）
-             limit: 8 * 1024,
-             //问题：因为url-loader默认使用es6 模块化解析，而html-loader引入图片是commonjs
-             //解析时会出问题：[objectModule]
-             //解决：关闭url-loader的es 6 模块化，使用commonjs解析
-             esModule: false,
-             //给图片进行重命名
-             //[name]: 表原名字
-             //[hash: 10 ]取图片的hash的前 10 位
-             //[ext]取文件原来扩展名
-             name: '[hash: 10 ].[ext]'
-           }
-         },
-         
-         {
-           test: /\.html$/,
-           //处理html文件的img图片（负责引入img，从而能被url-loader进行处理）
-           loader: 'html-loader'
-         }
-       ]
-     },
-   };
-   ```
-
 ### ~~3. 5 打包其他资源~~
 
 1. ~~修改配置文件~~
-
-   ```
-   module.exports = {
-       rules: [
-         {
-           test: /\.css$/,
-           use: ['style-loader', 'css-loader']
-         },
-         //打包其他资源(除了html/js/css资源以外的资源)
-         {
-           //排除css/js/html资源
-           exclude: /\.(css|js|html|less)$/,
-           loader: 'file-loader',
-           options: {
-             name: '[hash: 10 ].[ext]'
-           }
-         }
-       ]
-   };
-   ```
-
-
 
 ### 3. 6 devserver
 
@@ -380,50 +319,38 @@ module.exports = {
              MiniCssExtractPlugin.loader,
              'css-loader',
              {
-             loader: "postcss-loader",
-             options: {
-               postcssOptions: {
-                 plugins: [
-                   [
-                     "postcss-preset-env",
-                   ],
-                 ],
-               },
-             },
-           }
-           ]
-         }
-   
-       ]
-     },
-     plugins: [
-       newHtmlWebpackPlugin({
-         template: './src/index.html'
-       }),
-       newMiniCssExtractPlugin({
-         filename: 'css/built.css'
-       })
-     ],
-   };
+               loader: "postcss-loader",
+               options: {
+                 postcssOptions: {
+                   plugins: [
+                     [
+                       "postcss-preset-env",
+                     ],],
+                 }
+               }
+             }]
+         }]
+     }
+   }
    ```
    
 4. 修改package.json
 
 ```
 "browserslist": {
-     "development": [
-       "last 1 chromeversion",
-       "last 1 firefoxversion",
-       "last 1 safariversion"
-     ],
-       "production": [
-         "> 0. 2 %",
-         "notdead",
-         "notop_miniall"
-       ]
-   }
-   ```
-   
+  "development": [
+    "last 1 chromeversion",
+    "last 1 firefoxversion",
+    "last 1 safariversion"
+  ],
+    "production": [
+      "> 0. 2 %",
+      "notdead",
+      "notop_miniall"
+    ]
+}
+```
+
 
 ### 4. 3 [压缩 css](https://webpack.docschina.org/plugins/css-minimizer-webpack-plugin/#getting-started)
 
@@ -443,7 +370,6 @@ module.exports = {
    }
    ```
    
-   
 
 ### 4. 4 js 语法检查
 
@@ -454,9 +380,6 @@ module.exports = {
 2. 修改配置文件
 
    ```
-   process.env.NODE_ENV = 'development'
-   console.log(process.env.NODE_ENV);
-   
    module.exports = {
      // mode: 'development',
      mode: 'production',
@@ -469,7 +392,7 @@ module.exports = {
      })],
    }
    ```
-
+   
 3. 配置package.json
 
    ```
@@ -543,20 +466,7 @@ module.exports = {
 2. 修改配置文件
 
    ```
-   const { resolve } = require('path');
-   constHtmlWebpackPlugin = require('html-webpack-plugin');
-   
    module.exports = {
-     entry: './src/js/index.js',
-     output: {
-       filename: 'js/built.js',
-       path: resolve(__dirname, 'build')
-     },
-     plugins: [
-       new HtmlWebpackPlugin({
-         template: './src/index.html'
-       })
-     ],
      //生产环境下会自动压缩js代码
      mode: 'production'
    };
@@ -569,15 +479,7 @@ module.exports = {
 1. 修改配置文件
 
    ```
-   const { resolve } = require('path');
-   const HtmlWebpackPlugin = require('html-webpack-plugin');
-   
    module.exports = {
-     entry: './src/js/index.js',
-     output: {
-       filename: 'js/built.js',
-       path: resolve(__dirname, 'build')
-     },
      plugins: [
        new HtmlWebpackPlugin({
          template: './src/index.html',
@@ -715,8 +617,6 @@ module.exports = {
 正常来讲，一个文件只能被一个loader处理。
 当一个文件要被多个loader处理，那么一定要指定loader执行的先后顺序：
 
-
-
 ```
 // 先执行eslint在执行babel
 {
@@ -726,7 +626,7 @@ module.exports = {
       test: /\.js$/,
       exclude: /node_modules/,
       //优先执行
-      enforce: 'pre',
+      enforce: 'pre',		// pre => 先加载， post => 后加载
       loader: 'eslint-loader',
       options: {
         fix: true
@@ -888,70 +788,7 @@ module.exports = {
      > 内联会让代码体积变大，所以在生产环境不用内联的sourcemap
 
 ```
-const { resolve } = require('path');
-constHtmlWebpackPlugin = require('html-webpack-plugin');
-
 module.exports = {
-  entry: ['./src/js/index.js', './src/index.html'],
-  output: {
-    filename: 'js/built.js',
-    path: resolve(__dirname, 'build')
-  },
-  module: {
-    rules: [
-      //loader的配置
-      {
-        //处理less资源
-        test: /\.less$/,
-        use: ['style-loader', 'css-loader', 'less-loader']
-      },
-      {
-        //处理css资源
-        test: /\.css$/,
-        use: ['style-loader', 'css-loader']
-      },
-      {
-        //处理图片资源
-        test: /\.(jpg|png|gif)$/,
-        loader: 'url-loader',
-        options: {
-          limit: 8 * 1024,
-          name: '[hash: 10 ].[ext]',
-          //关闭es 6 模块化
-          esModule: false,
-          outputPath: 'imgs
-        }
-      },
-      {
-        //处理html中img资源
-        test: /\.html$/,
-        loader: 'html-loader'
-      },
-      {
-        //处理其他资源
-        exclude: /\.(html|js|css|less|jpg|png|gif)/,
-        loader: 'file-loader',
-        options: {
-          name: '[hash: 10 ].[ext]',
-          outputPath: 'media'
-        }
-      }
-    ]
-  },
-  plugins: [
-    //plugins的配置
-    newHtmlWebpackPlugin({
-      template: './src/index.html'
-    })
-  ],
-  mode: 'development',
-  devServer: {
-    contentBase: resolve(__dirname, 'build'),
-    compress: true,
-    port: 3000,
-    open: true,
-    hot: true
-  },
   devtool: 'eval-source-map'
 };
 ```
@@ -1114,9 +951,8 @@ module.exports = {
 
 问题：可能会把css / @babel/polyfill （副作用）文件干掉，这些文件只引用了
 
-  		在package.json中配置 
-
 ```
+//在package.json配置：
 "sideEffects": ["*.css", "*.less"]
 //"sideEffects": false 所有代码都没有副作用（都可以进行tree shaking）
 ```
@@ -1131,13 +967,13 @@ module.exports = {
 
 5.2  配置
 
-1. 利用多入口文件分割
+1. 利用多入口文件、splitChunks分割
 
    ```
    module.exports = {
      //单入口
      //entry:'./src/js/index.js',
-     entry: {
+     entry: {	
        index: './src/js/index.js',
        test: './src/js/test.js'
      },
@@ -1180,48 +1016,14 @@ module.exports = {
    };
    ```
 
-   
 
 ### 5. 7 lazyloading和预加载
 
-> 利用`import()`
+> 利用`import(/*webpackChunkName: 文件名*/ 引入路径)`
 
-懒加载：当文件需要使用时才加载
-
-预加载 prefetch：会在使用之前，提前加载js文件( 有兼容性问题)
-
-正常加载可以认为是并行加载（同一时间加载多个文件） 
-
-预加载 prefetch：等其他资源加载完毕，浏览器空闲了，再偷偷加载资源
-
-```
-const { resolve } = require('path');
-constHtmlWebpackPlugin = require('html-webpack-plugin');
-
-module.exports = {
-  //单入口
-  entry: './src/js/index.js',
-  output: {
-    filename: 'js/[name].[contenthash: 10 ].js',
-    path: resolve(__dirname, 'build')
-  },
-  plugins: [
-    newHtmlWebpackPlugin({
-      template: './src/index.html',
-      minify: {
-        collapseWhitespace: true,
-        removeComments: true
-      }
-    })
-  ],
-  optimization: {
-    splitChunks: {
-      chunks: 'all'
-    }
-  },
-  mode: 'production'
-};
-```
+- 正常加载：可以认为是并行加载（同一时间加载多个文件）
+- 懒加载 lazyload：当文件需要使用时才加载
+- 预加载 prefetch：等其他资源加载完毕，浏览器空闲了，再偷偷加载资源( 有兼容性问题)
 
 ### 5. 8 pwa
 
@@ -1231,7 +1033,7 @@ module.exports = {
 npm install --save-dev workbox-webpack-plugin
 ```
 
-3 .修改配置文件
+3 .修改webpack.config.js配置文件
 
 ```
 constWorkboxWebpackPlugin = require('workbox-webpack-plugin');
@@ -1258,11 +1060,28 @@ module.exports = {
 };
 ```
 
-### 5. 9 [多进程打包](https://webpack.docschina.org/loaders/thread-loader/)
+​		入口js文件配置：
 
-​        进程启动大概为600ms，进程通信也有开销。
+```
+ if ('serviceWorker' in navigator) {
+   window.addEventListener('load', () => {
+     navigator.serviceWorker.register('/service-worker.js').then(registration => {
+       console.log('SW registered: ', registration);
+     }).catch(registrationError => {
+       console.log('SW registration failed: ', registrationError);
+     });
+   });
+ }
+```
 
-​        只有工作消耗时间比较长，才需要多进程打包
+### 5. 9 多进程打包
+
+> 地址：https://webpack.docschina.org/loaders/thread-loader/
+
+
+​            进程启动大概为 600 ms，进程通信也有开销。只有工作消耗时间比较长，才需要多进程打包
+
+​			**只有打包消耗时间比较长，才需要多进程打包，请仅在耗时的操作中使用此 loader！**
 
 2 .下载安装包
 
@@ -1276,30 +1095,16 @@ npm install --save-dev thread-loader
 module.exports = {
   module: {
     rules: [{
-      //以下loader只会匹配一个
-      //注意：不能有两个配置处理同一种类型文件
-      oneOf: [
-        /*
-        正常来讲，一个文件只能被一个loader处理。
-        当一个文件要被多个loader处理，那么一定要指定loader执行的先后顺序：
-        先执行eslint在执行babel
-        */
         {
           test: /\.js$/,
           exclude: /node_modules/,
           use: [
-            /*
-            开启多进程打包。
-            进程启动大概为 600 ms，进程通信也有开销。
-            只有工作消耗时间比较长，才需要多进程打包
-            */
             {
               loader: 'thread-loader',
               options: {
                 workers: 2 //进程 2 个
               }
             },
-
             {
               loader: 'babel-loader',
               options: {
@@ -1316,18 +1121,16 @@ module.exports = {
                     }
                   ]
                 ],
-                //开启babel缓存
-                //第二次构建时，会读取之前的缓存
                 cacheDirectory: true
               }
             }]
-        },]
+        }
     }]
   },
 };
 ```
 
-### 5. 10 externals
+### 5. 10  externals
 
 > 与`dll`对比：本地不存在，使用外链的(第三方)库
 
@@ -1587,8 +1390,6 @@ module.exports = {
 
 ## 第7章：webpack V5 
 
-
-
 此版本重点关注以下内容:
 
 - 通过持久缓存提高构建性能.
@@ -1716,3 +1517,4 @@ cache: {
 ### 7.10 更多内容
 
 https://github.com/webpack/changelog-v5
+
