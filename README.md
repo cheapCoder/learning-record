@@ -409,7 +409,7 @@ module.exports = {
    
 4. 修改package.json
 
-   ```
+```
 "browserslist": {
      "development": [
        "last 1 chromeversion",
@@ -1716,4 +1716,3 @@ cache: {
 ### 7.10 更多内容
 
 https://github.com/webpack/changelog-v5
-
