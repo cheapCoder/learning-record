@@ -144,7 +144,6 @@ module.exports = {
         clientsClaim: true,
         skipWaiting: true,
       }),
-      
     ],
   },
   // target: 'web',    //NOTE: 解决浏览器不刷新的bug

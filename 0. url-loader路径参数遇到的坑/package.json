@@ -1,0 +1,49 @@
+{
+  "name": "what",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.1",
+    "@babel/preset-env": "^7.11.0",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^4.2.1",
+    "eslint": "^7.7.0",
+    "eslint-loader": "^4.0.2",
+    "file-loader": "^6.0.0",
+    "less": "^3.12.2",
+    "less-loader": "^6.2.0",
+    "style-loader": "^1.2.1",
+    "url-loader": "^4.1.0"
+  },
+  "eslintConfig": {
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module"
+    },
+    "env": {
+      "browser": true,
+      "node": true
+    },
+    "globals": {
+      "$": "readonly",
+      "promise": "readonly"
+    },
+    "rules": {
+      "no-console": 0,
+      "no-alert": 2,
+      "eqeqeq": 2
+    },
+    "extends": "eslint:recommended"
+  }
+}
