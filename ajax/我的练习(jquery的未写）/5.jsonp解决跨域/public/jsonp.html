@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>jQuery</title>
+	</head>
+	<body>
+		<button>click it</button>
+
+		<script>
+			var btn = document.querySelector('button');
+			function demo(a) {
+				console.log(a);
+			}
+			btn.addEventListener('click', () => {
+				var sc = document.createElement('script');
+				// console.log(script);
+				sc.src = 'http://localhost:3000/jsonp?callback=demo';
+				document.body.appendChild(sc)
+			})
+		</script>
+	</body>
+</html>

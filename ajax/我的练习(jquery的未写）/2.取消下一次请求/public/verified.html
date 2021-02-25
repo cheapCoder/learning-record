@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>verified_code</title>
+	</head>
+	<body>
+		<button>verified_code</button>
+		<div></div>
+		<script>
+			var btn = document.querySelector("button");
+			var that;
+			btn.addEventListener("click", () => {
+				let xhr = new XMLHttpRequest();
+				if (that) {
+					// console.log(123);
+					that.abort();
+				}
+				xhr.onreadystatechange = () => {
+					if (xhr.readyState === 4 && xhr.status === 200) {
+						// console.log(123);
+                        console.log(xhr.response);
+                        // console.log(xhr);
+					}
+				};
+				xhr.open(
+					"get",
+					"http://localhost:3000/verify"
+                );                              
+                xhr.send();
+                that = xhr;
+                // console.log(that);  
+			});
+		</script>
+	</body>
+</html>

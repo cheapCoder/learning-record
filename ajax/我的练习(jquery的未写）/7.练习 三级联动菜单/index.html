@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>三级联动菜单练习</title>
+		<script src="./jquery-1.12.4.js"></script>
+		<style>
+			* {
+				font-size: large;
+				margin-left: 30px;
+			}
+			div {
+				width: 600px;
+				height: 600px;
+				margin: 100px auto;
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+			<!-- province -->
+			<select name="" id="province">
+				<option value="">请选择省份</option>
+			</select>
+			<!-- cities -->
+			<select name="" id="city">
+				<option value="">请选择市级</option>
+			</select>
+			<!-- counties -->
+			<select name="" id="county">
+				<option value="">请选择区/县</option>
+			</select>
+		</div>
+
+		<script>
+					console.log(typeof zz);
+
+			$(() => {
+				// console.log($('#province'));
+                                //可以尝试对ajax请求($.get)进行函数封装！！！
+				$.get("http://localhost:3000/get_all_province", (res) => {
+					var { status, data, err } = res;
+					if (status === 1 ) {
+						// console.log($('#province').html);
+						let html = '';
+						data.forEach((val) => {
+							html += `<option value="${val.province}">${val.name}</option>`;
+						});
+						$('#province').append(html);
+					} else {
+						alert(err);
+					}
+				});
+
+				$('#province').change(() => {
+					$('#city').html = '<option value="">市级</option>'
+					$('#county').html = '<option value="">择区/县</option>'
+				})
+			});
+		</script>
+	</body>
+</html>
