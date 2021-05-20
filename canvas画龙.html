@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .bubble {
+      width: 4px;
+      height: 4px;
+      position: absolute;
+    }
+
+    div {
+      position: relative;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- NOTE:参考链接：https://juejin.cn/post/6963476650356916254 -->
+
+  <canvas id="canvas"></canvas>
+  <div id="container"></div>
+  <script>
+    let canvas = document.querySelector("#canvas");
+    let ctx = canvas.getContext("2d");
+    let container = document.querySelector("#container");
+
+    let image = new Image();
+    image.src = "./下载.jpg";
+    image.onload = function () {
+      container.width = image.width;
+      container.height = image.height;
+
+      canvas.width = image.width;
+      canvas.height = image.height;
+
+      ctx.drawImage(image, 0, 0);
+
+      let imageData = ctx.getImageData(0, 0, image.width, image.height);
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, image.width, image.height);
+      console.log(imageData.data);
+      let gap = 2;
+      for (let i = 0; i < image.width; i += gap) { // row
+        for (let j = 0; j < image.height; j += gap) { // height
+          let position = (i * image.width * 4) + j * 4;
+          // console.log(position)
+          let r = imageData.data[position];
+          let g = imageData.data[position + 1];
+          let b = imageData.data[position + 2]
+          if (r < 50 && g < 50 && b < 50) {
+            // ctx.fillStyle = "#000";
+            // ctx.fillRect(j, i, 4, 4);
+
+            let pic = document.createElement("img");
+            pic.src = "./下载2.jpg";
+            pic.setAttribute("class", "bubble");
+            pic.style.left = j * 4 + "px";
+            pic.style.top = i * 4 +"px";
+            container.appendChild(pic);
+          }
+
+
+        }
+      }
+
+    }
+  </script>
+</body>
+
+</html>
