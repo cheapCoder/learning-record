@@ -1,15 +1,56 @@
+/*
+ * @Author: 李衡
+ * @Date: 2021-08-01 16:27:39
+ * @LastEditTime: 2021-08-01 17:14:22
+ * @LastEditors: Please set LastEditors
+ * @Description: 递归修改文件夹内正则匹配的文件的名字
+ * @FilePath: 
+ */
 const fs = require('fs');
-const path = './new/';
+const { resolve } = require("path");
 
-fs.readdir(path, (err, data) => {
-    for(var i = 0; i < data.length;i++){
-        const reg = /\d{1,3}\.(\d{2}.*)/
-        const new_name = reg.exec(data[i])[1];
-        const new_path = `./new/${new_name}`
-        
-        // fs.renameSync(path, new_path);
-        fs.rename(path + data[i], new_path, (err) => {
-           if(err) {throw err }
-        })
+const path = './';
+const reg = /^(Code|Problem)(\d{2}.*)/
+// const reg = /^(\d{2}).*/
+
+/**
+ * @description: 期望的名字规则
+ * @param {*} nameRemainPart：经过正则过滤后的名字剩余部分
+ * @return {*}：新名字
+ */
+function newNameRule(nameRemainPart) {
+  return "C" + nameRemainPart
+}
+
+
+
+function rename(path) {
+  fs.readdir(path, (err, filenames) => {
+    if (err) throw err;
+
+    for (let i = 0; i < filenames.length; i++) {
+      let pathname = resolve(path, filenames[i])
+      fs.stat(pathname, (err, stats) => {
+        if (err) throw err;
+        if (stats.isDirectory()) {
+          rename(pathname);
+        } else if (stats.isFile()) {
+          if (reg.test(filenames[i])) {
+            const new_name = reg.exec(filenames[i])[2];
+            // console.log(newNameRule(new_name));
+            const new_pathname = resolve(path, newNameRule(new_name));
+            console.log(new_pathname);
+            // fs.rename(pathname, new_pathname, (err) => {
+            //   if (err) { throw err }
+            // })
+          }
+
+        }
+      })
     }
-})
+  })
+}
+
+
+
+rename(path);
