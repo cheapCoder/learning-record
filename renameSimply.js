@@ -40,9 +40,9 @@ function rename(path) {
             // console.log(newNameRule(new_name));
             const new_pathname = resolve(path, newNameRule(new_name));
             console.log(new_pathname);
-            // fs.rename(pathname, new_pathname, (err) => {
-            //   if (err) { throw err }
-            // })
+            fs.rename(pathname, new_pathname, (err) => {
+              if (err) { throw err }
+            })
           }
 
         }
