@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const VIEW_HEIGHT = 700;
 const ITEM_HEIGHT = 100;
@@ -21,15 +21,14 @@ export default function App() {
   const marginTop = useMemo(() => {
     //NOTE: Math.floor(outerRef.current?.scrollTop / ITEM_HEIGHT) * ITEM_HEIGHT  为了解决滑动效果不出现的问题, 其实就相当于下方注释的写法
     let offset = Math.floor(outerRef.current?.scrollTop / ITEM_HEIGHT) * ITEM_HEIGHT - PAGR_ITEM_COUNT * ITEM_HEIGHT
-    console.log(outerRef.current?.scrollTop - PAGR_ITEM_COUNT * ITEM_HEIGHT);
+    // console.log(outerRef.current?.scrollTop - PAGR_ITEM_COUNT * ITEM_HEIGHT);
     return offset < 0 ? 0 : offset;
   }, [outerRef.current?.scrollTop]);
   // const marginTop = useMemo(() => {
   //   return range.start * ITEM_HEIGHT;
   // }, [range.start]);
 
-  function handleScroll(e) {
-    // e.preventDefault();
+  function changeRange() {
     if (!outerRef.current) { return; }
     // console.log(outerRef.current.scrollHeight, outerRef.current.scrollTop);
     let startIndex = Math.floor(outerRef.current.scrollTop / ITEM_HEIGHT) - PRELOAD_COUNT;
@@ -40,6 +39,25 @@ export default function App() {
       start: startIndex < 0 ? 0 : startIndex,
       end: endIndex >= sources.length ? sources.length - 1 : endIndex
     })
+  }
+  
+  // 判断是否触底
+  function getBottom() {
+    console.log((outerRef.current?.scrollTop || 0) + (outerRef.current.clientHeight || 0 )>= (ITEM_HEIGHT * sources.length || 0));
+    return (outerRef.current?.scrollTop || 0) + (outerRef.current.clientHeight || 0) >= (ITEM_HEIGHT * sources.length || 0);
+  }
+
+  // 触底时加载数据
+  function addData() {
+    let arr = Array.from(new Array(4000).keys()).map(val => val + sources.length);
+    setSources([...sources, ...arr]);
+  }
+
+  function handleScroll(e) {
+    // e.preventDefault();
+    getBottom() && addData();
+
+    changeRange();
   }
 
   return (
