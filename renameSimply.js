@@ -44,7 +44,6 @@ function rename(path) {
               if (err) { throw err }
             })
           }
-
         }
       })
     }
