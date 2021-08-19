@@ -17,7 +17,7 @@ export default function App() {
   useEffect(() => {
     setSources(Array.from(new Array(4000).keys()));
   }, [])
-  // TODO: 不可这么写
+
   const marginTop = useMemo(() => {
     //NOTE: Math.floor(outerRef.current?.scrollTop / ITEM_HEIGHT) * ITEM_HEIGHT  为了解决滑动效果不出现的问题, 其实就相当于下方注释的写法
     let offset = Math.floor(outerRef.current?.scrollTop / ITEM_HEIGHT) * ITEM_HEIGHT - PAGR_ITEM_COUNT * ITEM_HEIGHT
@@ -40,10 +40,10 @@ export default function App() {
       end: endIndex >= sources.length ? sources.length - 1 : endIndex
     })
   }
-  
+
   // 判断是否触底
   function getBottom() {
-    console.log((outerRef.current?.scrollTop || 0) + (outerRef.current.clientHeight || 0 )>= (ITEM_HEIGHT * sources.length || 0));
+    console.log((outerRef.current?.scrollTop || 0) + (outerRef.current.clientHeight || 0) >= (ITEM_HEIGHT * sources.length || 0));
     return (outerRef.current?.scrollTop || 0) + (outerRef.current.clientHeight || 0) >= (ITEM_HEIGHT * sources.length || 0);
   }
 
